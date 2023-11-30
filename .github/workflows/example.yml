@@ -13,7 +13,7 @@ jobs:
         with:
           egress-policy: audit
 
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v4
       - name: Get DynamoDB Item
         id: config
         uses: step-security/dynamodb-actions@v1
