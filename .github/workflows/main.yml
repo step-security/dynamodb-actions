@@ -1,0 +1,12 @@
+name: workflow
+on: [push, pull_request]
+jobs:
+  job:
+    runs-on: ubuntu-latest
+    container: node:20
+    steps:
+      - uses: actions/checkout@v1
+      - name: Prepare
+        run: npm ci
+      - name: Build
+        run: npm run build
