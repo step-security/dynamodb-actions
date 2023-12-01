@@ -18,13 +18,13 @@ jobs:
         id: config
         uses: step-security/dynamodb-actions@v1
         env:
-          AWS_DEFAULT_REGION: us-east-1
-          AWS_REGION: us-east-1
+          AWS_DEFAULT_REGION: us-west-2
+          AWS_REGION: us-west-2
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         with:
           operation: get
-          region: us-east-1
+          region: us-west-2
           table: dynamodb-actions-test
           key: |
             { key: "foo" }
@@ -41,26 +41,26 @@ jobs:
       - name: Delete DynamoDB Item
         uses: step-security/dynamodb-actions@v1
         env:
-          AWS_DEFAULT_REGION: us-east-1
-          AWS_REGION: us-east-1
+          AWS_DEFAULT_REGION: us-west-2
+          AWS_REGION: us-west-2
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         with:
           operation: delete
-          region: us-east-1
+          region: us-west-2
           table: dynamodb-actions-test
           key: |
             { key: "foo" }
       - name: Put DynamoDB Item (JSON input)
         uses: step-security/dynamodb-actions@v1
         env:
-          AWS_DEFAULT_REGION: us-east-1
-          AWS_REGION: us-east-1
+          AWS_DEFAULT_REGION: us-west-2
+          AWS_REGION: us-west-2
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         with:
           operation: put
-          region: us-east-1
+          region: us-west-2
           table: dynamodb-actions-test
           item: |
             {
@@ -73,25 +73,25 @@ jobs:
       - name: Put DynamoDB Item (File Input)
         uses: step-security/dynamodb-actions@v1
         env:
-          AWS_DEFAULT_REGION: us-east-1
-          AWS_REGION: us-east-1
+          AWS_DEFAULT_REGION: us-west-2
+          AWS_REGION: us-west-2
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         with:
           operation: put
-          region: us-east-1
+          region: us-west-2
           table: dynamodb-actions-test
           file: fixtures/item.json
       - name: BatchPut DynamoDB Item (JSON input)
         uses: step-security/dynamodb-actions@v1
         env:
-          AWS_DEFAULT_REGION: us-east-1
-          AWS_REGION: us-east-1
+          AWS_DEFAULT_REGION: us-west-2
+          AWS_REGION: us-west-2
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         with:
           operation: batch-put
-          region: us-east-1
+          region: us-west-2
           table: dynamodb-actions-test
           items: |
             [{
@@ -107,12 +107,12 @@ jobs:
       - name: BatchPut DynamoDB Item (File Input)
         uses: step-security/dynamodb-actions@v1
         env:
-          AWS_DEFAULT_REGION: us-east-1
-          AWS_REGION: us-east-1
+          AWS_DEFAULT_REGION: us-west-2
+          AWS_REGION: us-west-2
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         with:
           operation: batch-put
-          region: us-east-1
+          region: us-west-2
           table: dynamodb-actions-test
           files: fixtures/*.json
