@@ -25,7 +25,7 @@
   "homepage": "https://github.com/step-security/dynamodb-actions#readme",
   "dependencies": {
     "@actions/core": "^1.2.6",
-    "@actions/glob": "^0.2.0",
+    "@actions/glob": "^0.4.0",
     "@hapi/joi": "^17.1.1",
     "axios": "^1.6.2",
     "aws-sdk": "^2.703.0"
