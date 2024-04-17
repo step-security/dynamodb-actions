@@ -28,7 +28,7 @@
     "@actions/glob": "^0.2.0",
     "@hapi/joi": "^17.1.1",
     "axios": "^1.6.2",
-    "aws-sdk": "^2.703.0"
+    "aws-sdk": "^2.1601.0"
   },
   "config": {
     "commitizen": {
