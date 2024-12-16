@@ -283,6 +283,96 @@ type DeleteItemInput = {
 
 None
 
+## Using this action with OIDC
+
+You can securely configure AWS credentials using GitHub’s OpenID Connect (OIDC) provider, eliminating the need to store long-lived credentials as secrets. By configuring your AWS IAM role trust policy to trust GitHub’s OIDC provider, you can assume this role directly within your workflow.
+
+### Prerequisites
+
+1. **AWS IAM Role with OIDC Trust**:  
+   Create or modify an IAM role that trusts the GitHub OIDC provider. For example:
+   ```json
+   {
+     "Version": "2012-10-17",
+     "Statement": [
+       {
+         "Effect": "Allow",
+         "Principal": {
+           "Federated": "arn:aws:iam::<your_account_id>:oidc-provider/token.actions.githubusercontent.com"
+         },
+         "Action": "sts:AssumeRoleWithWebIdentity",
+         "Condition": {
+           "StringEquals": {
+             "token.actions.githubusercontent.com:aud": "sts.amazonaws.com",
+             "token.actions.githubusercontent.com:sub": "repo:<your_org>/<your_repo>:ref:refs/heads/main"
+           }
+         }
+       }
+     ]
+   }
+   ```
+2. **GitHub Secrets**:
+    Store the IAM role’s ARN in a GitHub secret, for example ROLE_TO_ASSUME.
+
+### Example OIDC Workflow
+This example shows how to assume an AWS IAM role using OIDC before running the DynamoDB action.
+
+```yaml
+name: Example OIDC Workflow
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  job:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      # Check out repository
+      - uses: actions/checkout@v1
+      
+      # Configure AWS credentials via OIDC
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
+          aws-region: us-east-1  # Update as needed
+
+      # Get an item from DynamoDB using assumed credentials
+      - name: Get DynamoDB Item
+        id: config
+        uses: step-security/dynamodb-actions@v1
+        with:
+          operation: get
+          region: us-east-1
+          table: my-awesome-config
+          key: |
+            { key: "foo" }
+
+      # Print the full item
+      - name: Print item
+        run: |
+          echo '${{ steps.config.outputs.item }}'
+
+      # Print a specific field using built-in function
+      - name: Print specific field using built-in function
+        run: |
+          echo '${{ fromJson(steps.config.outputs.item).commit }}'
+
+      # Print a specific field using jq
+      - name: Print specific field using jq
+        run: |
+          jq '.commit' <<< '${{ steps.config.outputs.item }}'
+```
+#### Note:
+- `id-token: write` is required for OIDC so that the aws-actions/configure-aws-credentials action can exchange the GitHub OIDC token for temporary AWS credentials.
+- Ensure that the role-to-assume ARN matches the one in your AWS IAM configuration.
+- Update the aws-region and the table name as per your requirements.
+
+
 ## FAQ
 
 #### How to select specific field?
