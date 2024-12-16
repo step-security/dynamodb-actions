@@ -327,6 +327,9 @@ jobs:
   job:
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    permissions:
+      id-token: write
+      contents: read
     steps:
       # Check out repository
       - uses: actions/checkout@v1
@@ -365,6 +368,7 @@ jobs:
           jq '.commit' <<< '${{ steps.config.outputs.item }}'
 ```
 #### Note:
+- `id-token: write` is required for OIDC so that the aws-actions/configure-aws-credentials action can exchange the GitHub OIDC token for temporary AWS credentials.
 - Ensure that the role-to-assume ARN matches the one in your AWS IAM configuration.
 - Update the aws-region and the table name as per your requirements.
 
