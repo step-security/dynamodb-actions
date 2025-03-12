@@ -18,6 +18,6 @@ jobs:
   audit-fix:
     uses: step-security/reusable-workflows/.github/workflows/auto_cherry_pick.yaml@fix_UpStream-Changes-Cherry-Pick
     with:
-      original-owner: "chrisdickinson"
-      repo-name: "setup-yq"
+      original-owner: "mooyoul"
+      repo-name: "dynamodb-actions"
       base_branch: ${{ inputs.base_branch }}
