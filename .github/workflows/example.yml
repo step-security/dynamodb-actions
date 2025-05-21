@@ -9,14 +9,14 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@v2
+        uses: step-security/harden-runner@4d991eb9b905ef189e4c376166672c3f2f230481 # v2.11.0
         with:
           egress-policy: audit
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Get DynamoDB Item
         id: config
-        uses: step-security/dynamodb-actions@v1
+        uses: step-security/dynamodb-actions@0b116fa64bf24e8baef26c12b3bc548a91c61f51 # v1.2.3
         env:
           AWS_DEFAULT_REGION: us-west-2
           AWS_REGION: us-west-2
@@ -39,7 +39,7 @@ jobs:
         run: |
           jq '.commit' <<< '${{ steps.config.outputs.item }}'
       - name: Delete DynamoDB Item
-        uses: step-security/dynamodb-actions@v1
+        uses: step-security/dynamodb-actions@0b116fa64bf24e8baef26c12b3bc548a91c61f51 # v1.2.3
         env:
           AWS_DEFAULT_REGION: us-west-2
           AWS_REGION: us-west-2
@@ -52,7 +52,7 @@ jobs:
           key: |
             { key: "foo" }
       - name: Put DynamoDB Item (JSON input)
-        uses: step-security/dynamodb-actions@v1
+        uses: step-security/dynamodb-actions@0b116fa64bf24e8baef26c12b3bc548a91c61f51 # v1.2.3
         env:
           AWS_DEFAULT_REGION: us-west-2
           AWS_REGION: us-west-2
@@ -71,7 +71,7 @@ jobs:
               stars: 12345
             }
       - name: Put DynamoDB Item (File Input)
-        uses: step-security/dynamodb-actions@v1
+        uses: step-security/dynamodb-actions@0b116fa64bf24e8baef26c12b3bc548a91c61f51 # v1.2.3
         env:
           AWS_DEFAULT_REGION: us-west-2
           AWS_REGION: us-west-2
@@ -83,7 +83,7 @@ jobs:
           table: dynamodb-actions-test
           file: fixtures/item.json
       - name: BatchPut DynamoDB Item (JSON input)
-        uses: step-security/dynamodb-actions@v1
+        uses: step-security/dynamodb-actions@0b116fa64bf24e8baef26c12b3bc548a91c61f51 # v1.2.3
         env:
           AWS_DEFAULT_REGION: us-west-2
           AWS_REGION: us-west-2
@@ -105,7 +105,7 @@ jobs:
               value: "baz"
             }]
       - name: BatchPut DynamoDB Item (File Input)
-        uses: step-security/dynamodb-actions@v1
+        uses: step-security/dynamodb-actions@0b116fa64bf24e8baef26c12b3bc548a91c61f51 # v1.2.3
         env:
           AWS_DEFAULT_REGION: us-west-2
           AWS_REGION: us-west-2
