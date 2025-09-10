@@ -3,7 +3,7 @@ import * as execa from "execa";
 import { ddb, DYNAMODB_ENDPOINT, tableName, toJS } from "./helper";
 
 export async function invokeAction(input: { [key: string]: string | undefined }) {
-  const res = await execa("ts-node", ["src/index.ts"], {
+  const res = await execa.execa("ts-node", ["src/index.ts"], {
     preferLocal: true,
     env: Object.fromEntries(
       Object.entries(input).map(([key, value]) => [`INPUT_${key.toUpperCase()}`, value]),
@@ -38,7 +38,7 @@ describe("dynamodb-actions", () => {
 
       expect(e).to.eq(null);
       expect(res?.exitCode).to.eq(0);
-      expect(res?.stdout).to.eq(`::set-output name=item::{"value":"bar","createdAt":12345,"key":"foo"}`);
+      expect(res?.stdout).to.eq(`\n::set-output name=item::{"value":"bar","createdAt":12345,"key":"foo"}`);
     });
   });
 
