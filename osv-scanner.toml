@@ -5,3 +5,7 @@ reason = "Axios URL is not user-controlled"
 [[IgnoredVulns]]
 id = "GHSA-952p-6rrq-rcjv"
 reason = "It is a test dependency"
+
+[[IgnoredVulns]]
+id = "GHSA-52f5-9888-hmc6"
+reason = "It is dependency used to lint commit messages, hence can be ignored"
