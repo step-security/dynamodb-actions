@@ -1,4 +1,5 @@
 import * as Joi from "@hapi/joi";
+import { DeleteCommand } from "@aws-sdk/lib-dynamodb";
 import { createClient } from "../helpers";
 import { Operation } from "./base";
 
@@ -33,9 +34,9 @@ export class DeleteOperation implements Operation<DeleteOperationInput> {
 
   public async execute(input: DeleteOperationInput) {
     const ddb = createClient(input.region);
-    await ddb.delete({
+    await ddb.send(new DeleteCommand({
       TableName: input.table,
       Key: input.key,
-    }).promise();
+    }));
   }
 }
