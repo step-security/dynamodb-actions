@@ -1,10 +1,14 @@
-import { DocumentClient } from "aws-sdk/clients/dynamodb";
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 import * as vm from "vm";
 
-export function createClient(endpoint: string): DocumentClient {
-  return /^https?/i.test(endpoint) ?
-    new DocumentClient({ endpoint, region: "us-east-1" }) :
-    new DocumentClient({ region: endpoint });
+export function createClient(endpoint: string): DynamoDBDocumentClient {
+  const client = /^https?/i.test(endpoint) ?
+    new DynamoDBClient({ endpoint, region: "us-east-1" }) :
+    new DynamoDBClient({ region: endpoint });
+  return DynamoDBDocumentClient.from(client, {
+    marshallOptions: { removeUndefinedValues: true }
+  });
 }
 
 export function forgivingJSONParse(input: string): any {

@@ -1,5 +1,6 @@
 import * as glob from "@actions/glob";
 import * as Joi from "@hapi/joi";
+import { BatchWriteCommand } from "@aws-sdk/lib-dynamodb";
 import { promises as fs } from "fs";
 import { createClient } from "../helpers";
 import { Operation } from "./base";
@@ -54,7 +55,7 @@ export class BatchPutOperation implements Operation<BatchPutOperationInput> {
     const chunks: Item[][] = this.chunk(items, 20);
 
     for (const chunk of chunks) {
-      const res = await ddb.batchWrite({
+      const res = await ddb.send(new BatchWriteCommand({
         RequestItems: {
           [input.table]: chunk.map((item) => ({
             PutRequest: {
@@ -62,7 +63,7 @@ export class BatchPutOperation implements Operation<BatchPutOperationInput> {
             },
           })),
         },
-      }).promise();
+      }));
 
       const failedItems = res.UnprocessedItems?.[input.table] ?? [];
       if (failedItems.length > 0) {

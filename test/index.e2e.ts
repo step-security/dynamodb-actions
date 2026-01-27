@@ -1,9 +1,10 @@
 import { expect } from "chai";
-import * as execa from "execa";
+import execa, { ExecaReturnValue } from "execa";
+import { PutItemCommand, GetItemCommand, BatchGetItemCommand } from "@aws-sdk/client-dynamodb";
 import { ddb, DYNAMODB_ENDPOINT, tableName, toJS } from "./helper";
 
 export async function invokeAction(input: { [key: string]: string | undefined }) {
-  const res = await execa.execa("ts-node", ["src/index.ts"], {
+  const res = await execa("ts-node", ["src/index.ts"], {
     preferLocal: true,
     env: Object.fromEntries(
       Object.entries(input).map(([key, value]) => [`INPUT_${key.toUpperCase()}`, value]),
@@ -16,18 +17,18 @@ export async function invokeAction(input: { [key: string]: string | undefined })
 describe("dynamodb-actions", () => {
   describe("#get", () => {
     beforeEach(async () => {
-      await ddb.putItem({
+      await ddb.send(new PutItemCommand({
         TableName: tableName,
         Item: {
           key: { S: "foo" },
           value: { S: "bar" },
           createdAt: { N: "12345" },
         },
-      }).promise();
+      }));
     });
 
     it("should set output", async () => {
-      const [ e, res ] = await toJS<execa.ExecaReturnValue, unknown>(invokeAction({
+      const [ e, res ] = await toJS<ExecaReturnValue, unknown>(invokeAction({
         operation: "get",
         region: DYNAMODB_ENDPOINT,
         table: tableName,
@@ -45,7 +46,7 @@ describe("dynamodb-actions", () => {
   describe("#put", () => {
     context("with item", () => {
       it("should put record", async () => {
-        const [ e, res ] = await toJS<execa.ExecaReturnValue, unknown>(invokeAction({
+        const [ e, res ] = await toJS<ExecaReturnValue, unknown>(invokeAction({
           operation: "put",
           region: DYNAMODB_ENDPOINT,
           table: tableName,
@@ -60,12 +61,12 @@ describe("dynamodb-actions", () => {
         expect(res?.exitCode).to.eq(0);
         expect(res?.stdout).to.eq("");
 
-        const saved = await ddb.getItem({
+        const saved = await ddb.send(new GetItemCommand({
           TableName: tableName,
           Key: {
             key: { S: "foo" },
           },
-        }).promise();
+        }));
 
         const item = saved.Item;
         expect(item?.key).to.deep.eq({ S: "foo" });
@@ -76,7 +77,7 @@ describe("dynamodb-actions", () => {
 
     context("with file", () => {
       it("should put record", async () => {
-        const [ e, res ] = await toJS<execa.ExecaReturnValue, unknown>(invokeAction({
+        const [ e, res ] = await toJS<ExecaReturnValue, unknown>(invokeAction({
           operation: "put",
           region: DYNAMODB_ENDPOINT,
           table: tableName,
@@ -87,12 +88,12 @@ describe("dynamodb-actions", () => {
         expect(res?.exitCode).to.eq(0);
         expect(res?.stdout).to.eq("");
 
-        const saved = await ddb.getItem({
+        const saved = await ddb.send(new GetItemCommand({
           TableName: tableName,
           Key: {
             key: { S: "single" },
           },
-        }).promise();
+        }));
 
         const item = saved.Item;
         expect(item?.key).to.deep.eq({ S: "single" });
@@ -104,7 +105,7 @@ describe("dynamodb-actions", () => {
   describe("#batch-put", () => {
     context("with items", () => {
       it("should batchPut records", async () => {
-        const [ e, res ] = await toJS<execa.ExecaReturnValue, unknown>(invokeAction({
+        const [ e, res ] = await toJS<ExecaReturnValue, unknown>(invokeAction({
           operation: "batch-put",
           region: DYNAMODB_ENDPOINT,
           table: tableName,
@@ -123,7 +124,7 @@ describe("dynamodb-actions", () => {
         expect(res?.exitCode).to.eq(0);
         expect(res?.stdout).to.eq("");
 
-        const saved = (await ddb.batchGetItem({
+        const saved = (await ddb.send(new BatchGetItemCommand({
           RequestItems: {
             [tableName]: {
               Keys: [{
@@ -133,7 +134,7 @@ describe("dynamodb-actions", () => {
               }],
             },
           },
-        }).promise()).Responses?.[tableName];
+        }))).Responses?.[tableName];
 
         expect(saved).to.have.deep.members([{
           key: { S: "foo" },
@@ -149,7 +150,7 @@ describe("dynamodb-actions", () => {
 
     context("with files", () => {
       it("should put records", async () => {
-        const [ e, res ] = await toJS<execa.ExecaReturnValue, unknown>(invokeAction({
+        const [ e, res ] = await toJS<ExecaReturnValue, unknown>(invokeAction({
           operation: "batch-put",
           region: DYNAMODB_ENDPOINT,
           table: tableName,
@@ -159,7 +160,7 @@ describe("dynamodb-actions", () => {
         expect(e).to.eq(null);
         expect(res?.exitCode).to.eq(0);
 
-        const items = (await ddb.batchGetItem({
+        const items = (await ddb.send(new BatchGetItemCommand({
           RequestItems: {
             [tableName]: {
               Keys: [{
@@ -171,7 +172,7 @@ describe("dynamodb-actions", () => {
               }],
             },
           },
-        }).promise()).Responses?.[tableName];
+        }))).Responses?.[tableName];
 
         expect(items).to.have.deep.members([{
           key: { S: "single" },
@@ -219,18 +220,18 @@ describe("dynamodb-actions", () => {
 
   describe("#delete", () => {
     beforeEach(async () => {
-      await ddb.putItem({
+      await ddb.send(new PutItemCommand({
         TableName: tableName,
         Item: {
           key: { S: "foo" },
           value: { S: "bar" },
           createdAt: { N: "12345" },
         },
-      }).promise();
+      }));
     });
 
     it("should success", async () => {
-      const [ e, res ] = await toJS<execa.ExecaReturnValue, unknown>(invokeAction({
+      const [ e, res ] = await toJS<ExecaReturnValue, unknown>(invokeAction({
         operation: "delete",
         region: DYNAMODB_ENDPOINT,
         table: tableName,
@@ -243,12 +244,12 @@ describe("dynamodb-actions", () => {
       expect(res?.exitCode).to.eq(0);
       expect(res?.stdout).to.eq("");
 
-      const saved = await ddb.getItem({
+      const saved = await ddb.send(new GetItemCommand({
         TableName: tableName,
         Key: {
           key: { S: "foo" },
         },
-      }).promise();
+      }));
 
       expect(saved.Item).to.eq(undefined);
     });

@@ -1,4 +1,5 @@
 import { expect } from "chai";
+import { GetItemCommand } from "@aws-sdk/client-dynamodb";
 import { ddb, DYNAMODB_ENDPOINT, tableName, toJS } from "../helper";
 
 import { PutOperation } from "../../src/operations";
@@ -89,12 +90,12 @@ describe(PutOperation.name, () => {
           file: "fixtures/item.json",
         });
 
-        const item = (await ddb.getItem({
+        const item = (await ddb.send(new GetItemCommand({
           TableName: tableName,
           Key: {
             key: { S: "single" },
           },
-        }).promise()).Item;
+        }))).Item;
 
         expect(item).to.deep.eq({
           key: { S: "single" },
@@ -142,12 +143,12 @@ describe(PutOperation.name, () => {
           },
         });
 
-        const item = (await ddb.getItem({
+        const item = (await ddb.send(new GetItemCommand({
           TableName: tableName,
           Key: {
             key: { S: "foo" },
           },
-        }).promise()).Item;
+        }))).Item;
 
         expect(item).to.deep.eq({
           key: { S: "foo" },

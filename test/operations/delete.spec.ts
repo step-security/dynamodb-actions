@@ -1,4 +1,5 @@
 import { expect } from "chai";
+import { PutItemCommand, GetItemCommand } from "@aws-sdk/client-dynamodb";
 import { ddb, DYNAMODB_ENDPOINT, tableName, toJS } from "../helper";
 
 import { DeleteOperation } from "../../src/operations";
@@ -74,14 +75,14 @@ describe(DeleteOperation.name, () => {
 
     context("when operation was succeed", () => {
       beforeEach(async () => {
-        await ddb.putItem({
+        await ddb.send(new PutItemCommand({
           TableName: tableName,
           Item: {
             key: { S: "foo" },
             value: { S: "bar" },
             createdAt: { N: "12345" },
           },
-        }).promise();
+        }));
       });
 
       it("should success", async () => {
@@ -94,12 +95,12 @@ describe(DeleteOperation.name, () => {
           },
         });
 
-        const item = (await ddb.getItem({
+        const item = (await ddb.send(new GetItemCommand({
           TableName: tableName,
           Key: {
             key: { S: "foo "},
           },
-        }).promise()).Item;
+        }))).Item;
 
         expect(item).to.eq(undefined);
       });
