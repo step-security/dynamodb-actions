@@ -48,7 +48,7 @@ class BatchPutOperation {
             }).promise();
             const failedItems = (_b = (_a = res.UnprocessedItems) === null || _a === void 0 ? void 0 : _a[input.table]) !== null && _b !== void 0 ? _b : [];
             if (failedItems.length > 0) {
-                console.error("UnprocessedItems: ", res.UnprocessedItems); // tslint:disable-line
+                console.error("UnprocessedItems: ", res.UnprocessedItems); // eslint-disable-line no-console
                 throw new Error("Got UnprocessedItems from DynamoDB");
             }
         }

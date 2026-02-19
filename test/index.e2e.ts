@@ -1,9 +1,10 @@
 import { expect } from "chai";
-import * as execa from "execa";
+import type { ExecaReturnValue } from "execa";
 import { ddb, DYNAMODB_ENDPOINT, tableName, toJS } from "./helper";
 
 export async function invokeAction(input: { [key: string]: string | undefined }) {
-  const res = await execa.execa("ts-node", ["src/index.ts"], {
+  const { execa } = await import("execa");
+  const res = await execa("ts-node", ["src/index.ts"], {
     preferLocal: true,
     env: Object.fromEntries(
       Object.entries(input).map(([key, value]) => [`INPUT_${key.toUpperCase()}`, value]),
@@ -27,7 +28,7 @@ describe("dynamodb-actions", () => {
     });
 
     it("should set output", async () => {
-      const [ e, res ] = await toJS<execa.ExecaReturnValue, unknown>(invokeAction({
+      const [ e, res ] = await toJS<ExecaReturnValue, unknown>(invokeAction({
         operation: "get",
         region: DYNAMODB_ENDPOINT,
         table: tableName,
@@ -45,7 +46,7 @@ describe("dynamodb-actions", () => {
   describe("#put", () => {
     context("with item", () => {
       it("should put record", async () => {
-        const [ e, res ] = await toJS<execa.ExecaReturnValue, unknown>(invokeAction({
+        const [ e, res ] = await toJS<ExecaReturnValue, unknown>(invokeAction({
           operation: "put",
           region: DYNAMODB_ENDPOINT,
           table: tableName,
@@ -76,7 +77,7 @@ describe("dynamodb-actions", () => {
 
     context("with file", () => {
       it("should put record", async () => {
-        const [ e, res ] = await toJS<execa.ExecaReturnValue, unknown>(invokeAction({
+        const [ e, res ] = await toJS<ExecaReturnValue, unknown>(invokeAction({
           operation: "put",
           region: DYNAMODB_ENDPOINT,
           table: tableName,
@@ -104,7 +105,7 @@ describe("dynamodb-actions", () => {
   describe("#batch-put", () => {
     context("with items", () => {
       it("should batchPut records", async () => {
-        const [ e, res ] = await toJS<execa.ExecaReturnValue, unknown>(invokeAction({
+        const [ e, res ] = await toJS<ExecaReturnValue, unknown>(invokeAction({
           operation: "batch-put",
           region: DYNAMODB_ENDPOINT,
           table: tableName,
@@ -149,7 +150,7 @@ describe("dynamodb-actions", () => {
 
     context("with files", () => {
       it("should put records", async () => {
-        const [ e, res ] = await toJS<execa.ExecaReturnValue, unknown>(invokeAction({
+        const [ e, res ] = await toJS<ExecaReturnValue, unknown>(invokeAction({
           operation: "batch-put",
           region: DYNAMODB_ENDPOINT,
           table: tableName,
@@ -230,7 +231,7 @@ describe("dynamodb-actions", () => {
     });
 
     it("should success", async () => {
-      const [ e, res ] = await toJS<execa.ExecaReturnValue, unknown>(invokeAction({
+      const [ e, res ] = await toJS<ExecaReturnValue, unknown>(invokeAction({
         operation: "delete",
         region: DYNAMODB_ENDPOINT,
         table: tableName,

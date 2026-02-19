@@ -46,6 +46,6 @@ async function validateSubscription() {
         }
     }
 })().catch((e) => {
-    console.error(e.stack); // tslint:disable-line
+    console.error(e.stack); // eslint-disable-line no-console
     core.setFailed(e.message);
 });

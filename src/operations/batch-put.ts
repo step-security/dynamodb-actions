@@ -66,7 +66,7 @@ export class BatchPutOperation implements Operation<BatchPutOperationInput> {
 
       const failedItems = res.UnprocessedItems?.[input.table] ?? [];
       if (failedItems.length > 0) {
-        console.error("UnprocessedItems: ", res.UnprocessedItems); // tslint:disable-line
+        console.error("UnprocessedItems: ", res.UnprocessedItems); // eslint-disable-line no-console
         throw new Error("Got UnprocessedItems from DynamoDB");
       }
     }
