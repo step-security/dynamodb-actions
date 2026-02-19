@@ -1,12 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.forgivingJSONParse = exports.createClient = void 0;
-const dynamodb_1 = require("aws-sdk/clients/dynamodb");
+const client_dynamodb_1 = require("@aws-sdk/client-dynamodb");
+const lib_dynamodb_1 = require("@aws-sdk/lib-dynamodb");
 const vm = require("vm");
 function createClient(endpoint) {
-    return /^https?/i.test(endpoint) ?
-        new dynamodb_1.DocumentClient({ endpoint, region: "us-east-1" }) :
-        new dynamodb_1.DocumentClient({ region: endpoint });
+    const client = /^https?/i.test(endpoint) ?
+        new client_dynamodb_1.DynamoDBClient({ endpoint, region: "us-east-1" }) :
+        new client_dynamodb_1.DynamoDBClient({ region: endpoint });
+    return lib_dynamodb_1.DynamoDBDocumentClient.from(client);
 }
 exports.createClient = createClient;
 function forgivingJSONParse(input) {

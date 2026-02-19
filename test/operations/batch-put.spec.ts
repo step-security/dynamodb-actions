@@ -1,3 +1,4 @@
+import { BatchGetItemCommand, GetItemCommand } from "@aws-sdk/client-dynamodb";
 import { expect } from "chai";
 import { ddb, DYNAMODB_ENDPOINT, tableName, toJS } from "../helper";
 
@@ -89,12 +90,12 @@ describe(BatchPutOperation.name, () => {
           files: "fixtures/item.json",
         });
 
-        const item = (await ddb.getItem({
+        const item = (await ddb.send(new GetItemCommand({
           TableName: tableName,
           Key: {
             key: { S: "single" },
           },
-        }).promise()).Item;
+        }))).Item;
 
         expect(item).to.deep.eq({
           key: { S: "single" },
@@ -120,7 +121,7 @@ describe(BatchPutOperation.name, () => {
           files: "fixtures/item*.json",
         });
 
-        const items = (await ddb.batchGetItem({
+        const items = (await ddb.send(new BatchGetItemCommand({
           RequestItems: {
             [tableName]: {
               Keys: [{
@@ -132,7 +133,7 @@ describe(BatchPutOperation.name, () => {
               }],
             },
           },
-        }).promise()).Responses?.[tableName];
+        }))).Responses?.[tableName];
 
         expect(items).to.have.deep.members([{
           key: { S: "single" },
@@ -209,7 +210,7 @@ describe(BatchPutOperation.name, () => {
           }],
         });
 
-        const items = (await ddb.batchGetItem({
+        const items = (await ddb.send(new BatchGetItemCommand({
           RequestItems: {
             [tableName]: {
               Keys: [{
@@ -219,7 +220,7 @@ describe(BatchPutOperation.name, () => {
               }],
             },
           },
-        }).promise()).Responses?.[tableName];
+        }))).Responses?.[tableName];
 
         expect(items).to.have.deep.members([{
           key: { S: "foo" },

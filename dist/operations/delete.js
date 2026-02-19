@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DeleteOperation = void 0;
+const lib_dynamodb_1 = require("@aws-sdk/lib-dynamodb");
 const Joi = require("@hapi/joi");
 const helpers_1 = require("../helpers");
 const InputSchema = Joi.object({
@@ -24,10 +25,10 @@ class DeleteOperation {
     }
     async execute(input) {
         const ddb = (0, helpers_1.createClient)(input.region);
-        await ddb.delete({
+        await ddb.send(new lib_dynamodb_1.DeleteCommand({
             TableName: input.table,
             Key: input.key,
-        }).promise();
+        }));
     }
 }
 exports.DeleteOperation = DeleteOperation;
