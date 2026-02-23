@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GetOperation = void 0;
+const lib_dynamodb_1 = require("@aws-sdk/lib-dynamodb");
 const Joi = require("@hapi/joi");
 const helpers_1 = require("../helpers");
 const InputSchema = Joi.object({
@@ -25,11 +26,11 @@ class GetOperation {
     }
     async execute(input) {
         const ddb = (0, helpers_1.createClient)(input.region);
-        const res = await ddb.get({
+        const res = await ddb.send(new lib_dynamodb_1.GetCommand({
             TableName: input.table,
             Key: input.key,
             ConsistentRead: !!input.consistent,
-        }).promise();
+        }));
         return { item: JSON.stringify(res.Item) };
     }
 }

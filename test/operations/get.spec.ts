@@ -1,3 +1,4 @@
+import { PutItemCommand } from "@aws-sdk/client-dynamodb";
 import { expect } from "chai";
 import { ddb, DYNAMODB_ENDPOINT, tableName, toJS } from "../helper";
 
@@ -76,14 +77,14 @@ describe(GetOperation.name, () => {
 
     context("when operation was succeed", () => {
       beforeEach(async () => {
-        await ddb.putItem({
+        await ddb.send(new PutItemCommand({
           TableName: tableName,
           Item: {
             key: { S: "foo" },
             value: { S: "bar" },
             createdAt: { N: "12345" },
           },
-        }).promise();
+        }));
       });
 
       it("should return output", async () => {

@@ -1,3 +1,4 @@
+import { PutCommand } from "@aws-sdk/lib-dynamodb";
 import * as Joi from "@hapi/joi";
 import { promises as fs } from "fs";
 import { createClient } from "../helpers";
@@ -48,10 +49,10 @@ export class PutOperation implements Operation<PutOperationInput> {
     const ddb = createClient(input.region);
     const item = input.item || await this.read(input.file);
 
-    await ddb.put({
+    await ddb.send(new PutCommand({
       TableName: input.table,
       Item: item,
-    }).promise();
+    }));
   }
 
   private async read(path: string) {

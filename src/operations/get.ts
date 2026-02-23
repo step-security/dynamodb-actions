@@ -1,3 +1,4 @@
+import { GetCommand } from "@aws-sdk/lib-dynamodb";
 import * as Joi from "@hapi/joi";
 import { createClient } from "../helpers";
 import { Operation } from "./base";
@@ -34,11 +35,11 @@ export class GetOperation implements Operation<GetOperationInput> {
 
   public async execute(input: GetOperationInput) {
     const ddb = createClient(input.region);
-    const res = await ddb.get({
+    const res = await ddb.send(new GetCommand({
       TableName: input.table,
       Key: input.key,
       ConsistentRead: !!input.consistent,
-    }).promise();
+    }));
 
     return { item: JSON.stringify(res.Item) };
   }
