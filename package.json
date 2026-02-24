@@ -7,7 +7,7 @@
     "clean": "rm -rf dist",
     "test": "AWS_ACCESS_KEY_ID=fake AWS_SECRET_ACCESS_KEY=fake mocha -r ts-node/register -t 300000 'test/**/*.ts'",
     "build": "npm run clean && tsc",
-    "lint": "tslint '{src,test}/**/*.ts'"
+    "lint": "eslint 'src/**/*.ts' 'test/**/*.ts'"
   },
   "repository": {
     "type": "git",
@@ -26,33 +26,24 @@
   "dependencies": {
     "@actions/core": "^1.2.6",
     "@actions/glob": "^0.2.0",
+    "@aws-sdk/client-dynamodb": "^3.993.0",
+    "@aws-sdk/lib-dynamodb": "^3.993.0",
     "@hapi/joi": "^17.1.1",
-    "axios": "^1.6.2",
-    "aws-sdk": "^2.703.0"
-  },
-  "config": {
-    "commitizen": {
-      "path": "cz-conventional-changelog"
-    }
-  },
-  "commitlint": {
-    "extends": [
-      "@prescott/commitlint-preset"
-    ]
+    "axios": "^1.6.2"
   },
   "devDependencies": {
-    "@prescott/commitlint-preset": "^1.0.9",
     "@types/chai": "^4.3.11",
     "@types/hapi__joi": "^17.1.14",
     "@types/joi": "^17.2.3",
     "@types/mocha": "^10.0.6",
     "@types/node": "^20.11.19",
+    "@typescript-eslint/eslint-plugin": "^8.56.0",
+    "@typescript-eslint/parser": "^8.56.0",
     "chai": "^4.3.10",
+    "eslint": "^9.39.2",
     "execa": "^8.0.1",
-    "husky": "^8.0.3",
     "mocha": "^10.2.0",
     "ts-node": "^10.9.1",
-    "tslint": "^6.1.3",
     "typescript": "^5.3.2"
   }
 }

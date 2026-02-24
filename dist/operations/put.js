@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PutOperation = void 0;
+const lib_dynamodb_1 = require("@aws-sdk/lib-dynamodb");
 const Joi = require("@hapi/joi");
 const fs_1 = require("fs");
 const helpers_1 = require("../helpers");
@@ -33,10 +34,10 @@ class PutOperation {
     async execute(input) {
         const ddb = (0, helpers_1.createClient)(input.region);
         const item = input.item || await this.read(input.file);
-        await ddb.put({
+        await ddb.send(new lib_dynamodb_1.PutCommand({
             TableName: input.table,
             Item: item,
-        }).promise();
+        }));
     }
     async read(path) {
         const content = await fs_1.promises.readFile(path, { encoding: "utf8" });

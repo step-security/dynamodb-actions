@@ -1,15 +1,7 @@
 [[IgnoredVulns]]
-id = "GHSA-8hc4-vh64-cxmj"
-reason = "Axios URL is not user-controlled"
+id = "GHSA-2g4f-4pwh-qvx6"
+reason = "ajv is a dev dependency, not used at runtime"
 
 [[IgnoredVulns]]
-id = "GHSA-952p-6rrq-rcjv"
-reason = "It is a test dependency"
-
-[[IgnoredVulns]]
-id = "GHSA-52f5-9888-hmc6"
-reason = "It is dependency used to lint commit messages, hence can be ignored"
-
-[[IgnoredVulns]]
-id = "GHSA-j965-2qgj-vjmq"
-reason = "Region input is set via GitHub Actions workflow file (not user-controlled)"
+id = "GHSA-g9mf-h72j-4rw9"
+reason = "undici is a transitive dependency of @actions/core -> @actions/http-client; unbounded decompression only exploitable by malicious servers, not applicable in GitHub Actions context"

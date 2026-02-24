@@ -1,4 +1,5 @@
 import * as glob from "@actions/glob";
+import { BatchWriteCommand } from "@aws-sdk/lib-dynamodb";
 import * as Joi from "@hapi/joi";
 import { promises as fs } from "fs";
 import { createClient } from "../helpers";
@@ -54,7 +55,7 @@ export class BatchPutOperation implements Operation<BatchPutOperationInput> {
     const chunks: Item[][] = this.chunk(items, 20);
 
     for (const chunk of chunks) {
-      const res = await ddb.batchWrite({
+      const res = await ddb.send(new BatchWriteCommand({
         RequestItems: {
           [input.table]: chunk.map((item) => ({
             PutRequest: {
@@ -62,11 +63,11 @@ export class BatchPutOperation implements Operation<BatchPutOperationInput> {
             },
           })),
         },
-      }).promise();
+      }));
 
       const failedItems = res.UnprocessedItems?.[input.table] ?? [];
       if (failedItems.length > 0) {
-        console.error("UnprocessedItems: ", res.UnprocessedItems); // tslint:disable-line
+        console.error("UnprocessedItems: ", res.UnprocessedItems); // eslint-disable-line no-console
         throw new Error("Got UnprocessedItems from DynamoDB");
       }
     }
