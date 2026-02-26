@@ -40,7 +40,7 @@ outputs:
     description: 'JSON-serialized Item'
 runs:
   using: 'docker'
-  image: 'docker://ghcr.io/step-security/dynamodb-actions:v1.2.7@sha256:0cf57d38078f5ad97f459f790b5bed8dc250309ebc90082b510f2add23df96ef' #v1.2.7
+  image: 'docker://ghcr.io/step-security/dynamodb-actions:v1.2.7@sha256:e20e4ac365ddd3f64e14b0aa1be4cfe8385a4c6a11dce345ebbdc7b71a1819b1' #v1.2.7
 branding:
   icon: 'database'
   color: 'blue'
