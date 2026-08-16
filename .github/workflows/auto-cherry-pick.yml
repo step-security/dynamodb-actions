@@ -7,6 +7,13 @@ on:
         description: "Base branch to create the PR against"
         required: true
         default: "main"
+      mode:
+        description: "Run mode: cherry-pick or verify"
+        required: false
+        default: "cherry-pick"
+
+  pull_request:
+    types: [opened, synchronize, labeled]
 
 permissions:
   contents: write
@@ -21,3 +28,4 @@ jobs:
       original-owner: "mooyoul"
       repo-name: "dynamodb-actions"
       base_branch: ${{ inputs.base_branch }}
+      mode: ${{ github.event_name == 'pull_request' && 'verify' || inputs.mode }}
