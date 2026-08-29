@@ -1,0 +1,18 @@
+{
+   "schema_version": "1",
+   "onboarding_type": "copied",
+   "archived": false,
+   "maintained_action_name": "step-security/dynamodb-actions",
+   "upstream_full_repo_name": "mooyoul/dynamodb-actions",
+   "action_type": "docker",
+   "last_release": {
+     "tag_name": "v1.2.7",
+     "created_at": "2026-04-10T09:11:07Z",
+     "published_at": "2026-04-13T05:25:46Z"
+   },
+   "sync": {
+     "ignore_presets": [
+       "defaults_v1"
+     ]
+   }
+ }
